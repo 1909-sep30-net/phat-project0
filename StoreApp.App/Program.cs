@@ -1,4 +1,5 @@
 ﻿using System;
+using StoreApp.Library;
 
 namespace StoreApp.App
 {
@@ -6,7 +7,7 @@ namespace StoreApp.App
     {
         static void Main(string[] args)
         {
-
+            Welcome.welcomePage();
         }
     }
 }
