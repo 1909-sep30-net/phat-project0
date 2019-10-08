@@ -2,9 +2,9 @@ using System;
 using StoreApp.Library;
 namespace StoreApp.App
 {
-    class Welcome
+    public class Welcome
     {
-        internal static void welcomePage()
+        public void welcomePage()
         {
             int choice = 0;
             
@@ -19,17 +19,16 @@ namespace StoreApp.App
                 Console.WriteLine("1-Customer 2-Manager");
                 choice = Int32.Parse(Console.ReadLine());
             }
-
             requestHandler(choice);
-
+            Console.Clear();
         }
 
 
-        internal static void requestHandler(int opt)
+        public void requestHandler(int opt)
         {
-            Console.Clear();
             switch (opt)
             {
+                
                 case 1:
                     CustomerDisplayMenu();
                     break;
@@ -41,25 +40,32 @@ namespace StoreApp.App
 
         }
 
-        static void CustomerDisplayMenu()
+        public void CustomerDisplayMenu()
         {
-            
             int customerChoice;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("1. Create A New Account");
-                Console.WriteLine("2. Sign In");
-                Console.WriteLine("4. Choose Store");
-                customerChoice = Int32.Parse(Console.ReadLine());
-                if(customerChoice == 2)
-                {
-                   User.CustomerLogin();
-                    
-                }
 
-            }
-            while (customerChoice != 4);
+                Console.WriteLine("1. Create A New Account");
+                Console.WriteLine("2. List All Users");
+                Console.WriteLine("3. Place An Order");
+                Console.WriteLine("4. Search Another Stores");
+
+                customerChoice = Int32.Parse(Console.ReadLine());
+
+                switch(customerChoice)
+                {
+                    case 1:
+                        User.AddNewCustomer();
+                        break;      
+                    case 2:
+                        User.DisplayCustomers();
+                        break;                  
+                    default:
+                        Console.WriteLine("Thank You");
+                        Console.WriteLine("Press Any Key To Continue");
+                        Console.ReadKey();
+                        break;
+                }
+                //go back function later
         }
 
         static void ManagerDisplayMenu()

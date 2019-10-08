@@ -7,7 +7,8 @@ namespace StoreApp.App
     {
         static void Main(string[] args)
         {
-            Welcome.welcomePage();
+            Welcome welcome= new Welcome();
+            welcome.welcomePage();
         }
     }
 }
