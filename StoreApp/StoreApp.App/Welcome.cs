@@ -1,14 +1,18 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using StoreApp.Library;
+
 namespace StoreApp.App
 {
     public class Welcome
     {
+        static string customerJSONFilePath = @"C:\revature\phat-project0\Data\Customer.json";
+        static string productJSONFilePath = @"C:\revature\phat-project0\Data\Product.json";
+        static string OrderJSONFilePath = @"C:\revature\phat-project0\Data\Order.json";
         public void welcomePage()
         {
             int choice = 0;
-            
-
             Console.WriteLine("Welcome To The ABC Grocery Store");
             Console.WriteLine("Your Are: 1-Customer 2-Manager");
             choice = Int32.Parse(Console.ReadLine());
@@ -22,13 +26,11 @@ namespace StoreApp.App
             requestHandler(choice);
             Console.Clear();
         }
-
-
         public void requestHandler(int opt)
         {
             switch (opt)
             {
-                
+
                 case 1:
                     CustomerDisplayMenu();
                     break;
@@ -44,28 +46,28 @@ namespace StoreApp.App
         {
             int customerChoice;
 
-                Console.WriteLine("1. Create A New Account");
-                Console.WriteLine("2. List All Users");
-                Console.WriteLine("3. Place An Order");
-                Console.WriteLine("4. Search Another Stores");
+            Console.WriteLine("1. Create A New Account");
+            Console.WriteLine("2. List All Users");
+            Console.WriteLine("3. Place An Order");
+            Console.WriteLine("4. Search Another Stores");
 
-                customerChoice = Int32.Parse(Console.ReadLine());
+            customerChoice = Int32.Parse(Console.ReadLine());
 
-                switch(customerChoice)
-                {
-                    case 1:
-                        User.AddNewCustomer();
-                        break;      
-                    case 2:
-                        User.DisplayCustomers();
-                        break;                  
-                    default:
-                        Console.WriteLine("Thank You");
-                        Console.WriteLine("Press Any Key To Continue");
-                        Console.ReadKey();
-                        break;
-                }
-                //go back function later
+            switch (customerChoice)
+            {
+                case 1:
+                    User.AddNewCustomer(customerJSONFilePath);
+                    break;
+                case 2:
+                    User.DisplayCustomers(customerJSONFilePath);
+                    break;
+                default:
+                    Console.WriteLine("Thank You");
+                    Console.WriteLine("Press Any Key To Continue");
+                    Console.ReadKey();
+                    break;
+            }
+            //go back function later
         }
 
         static void ManagerDisplayMenu()
@@ -78,3 +80,4 @@ namespace StoreApp.App
         }
     }
 }
+
