@@ -10,21 +10,35 @@ namespace StoreApp.App
     
     public class User
     {
-        
+        //Customer's Menu
         public static void AddNewCustomer(string jsonFilePath)
         {
             Console.Clear();
-
+            Customer newCustomer = new Customer();
             string firstName; 
             string lastName;
-
+            string storeNum;
+          
+            Console.WriteLine("Please Choose A Store: 1.Arlington,TX   2. Houston,TX");
+            storeNum = Console.ReadLine();
             Console.WriteLine("Please Enter Your First Name: ");
             firstName = Console.ReadLine();
             Console.WriteLine("Please Enter Your Last Name");
             lastName = Console.ReadLine();
 
-
-            Customer newCustomer = new Customer();
+            if(Int32.Parse(storeNum) == 1)
+            {
+                newCustomer.Store = "Arlington,TX";
+            }
+            else if(Int32.Parse(storeNum) == 2)
+            {
+                newCustomer.Store = "Houston,TX";
+            }
+            else 
+            {
+                newCustomer.Store = "Arlington,TX";
+            }
+        
             newCustomer.FirstName = firstName;
             newCustomer.LastName = lastName;
             newCustomer.Id += 1; 
@@ -34,11 +48,13 @@ namespace StoreApp.App
 
             Console.WriteLine("New Customer {0} {1}", newCustomer.FirstName, newCustomer.LastName + " Has Been Added");
             Console.WriteLine("Press Any Key To Continue");
-            Console.ReadKey();
-            
+            Console.ReadKey();            
+        }
 
+       
+        public static void PlaceAnOrder()
+        {
 
-            
         }
 
         public static void DisplayCustomers(string jsonFilePath)
@@ -46,14 +62,22 @@ namespace StoreApp.App
             List<Customer> data = new List<Customer>();
             if (File.Exists(jsonFilePath))
             {
-                data = DeserializeJsonFromFile(jsonFilePath);
                 Console.Clear();
+                string store;
+                data = DeserializeJsonFromFile(jsonFilePath);
 
+                Console.WriteLine("Please Choose A Store: Arlington,TX   Houston,TX");
+                store = Console.ReadLine();
                 Console.WriteLine("List Of Customer:");
 
-                for (int i = 0; i < data.Count; i++)
+                foreach (Customer v in data)
                 {
-                    Console.WriteLine(" {0} {1} {2}",data[i].Id, data[i].FirstName, data[i].LastName);
+  
+                    if (v.Store == store)
+                    {
+                        Console.WriteLine(" {0} {1}", v.FirstName, v.LastName);
+                    }
+
                 }
                 Console.WriteLine("Press Any Key To Continue");
                 Console.ReadKey();
@@ -65,11 +89,48 @@ namespace StoreApp.App
             }
 
         }
-        public static void PlaceAnOrder()
+
+        public static void SearchCustomerByName(string jsonFilePath)
         {
+            List<Customer> data = new List<Customer>();
+            if (File.Exists(jsonFilePath))
+            {
+                data = DeserializeJsonFromFile(jsonFilePath);
 
+                Console.Clear();
+                string store;
+
+                Console.WriteLine("Please Choose A Store: Arlington,TX   Houston,TX");
+                store = Console.ReadLine();
+                Console.WriteLine("Please Enter Any First Name or Last Name To Search: ");
+                string name = Console.ReadLine();
+               
+
+                
+                foreach (Customer v in data)
+                {
+  
+                    if (v.Store == store)
+                    {
+                        if (v.FirstName.ToLower() == name.ToLower() || v.LastName.ToLower() == name.ToLower())
+                        {
+                            Console.WriteLine("Customer Found: ");
+                            Console.WriteLine(" {0} {1}", v.FirstName, v.LastName);
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Not Found");
+                        }
+                            
+                    }
+
+                }
+                Console.WriteLine("Press Any Key To Continue");
+                Console.ReadKey();
+            }
+           
         }
-
         public static List<Customer> DeserializeJsonFromFile(string jsonFilePath)
         {
             string json = File.ReadAllText(jsonFilePath);
@@ -93,8 +154,6 @@ namespace StoreApp.App
                 data.AddRange(DeserializeJsonFromFile(jsonFilePath));
                 data.Add(customerToSave);
             }
-              
-
             string json = JsonConvert.SerializeObject(data);
             File.WriteAllText(jsonFilePath,json);
         }

@@ -73,10 +73,24 @@ namespace StoreApp.App
         static void ManagerDisplayMenu()
         {
             Console.Clear();
-            Console.WriteLine("1. View All Orders");
-            Console.WriteLine("2. Display Stories");
+            int managerChoice = 0;
+            Console.WriteLine("1. Search Customer By Stores");
+            Console.WriteLine("2. Display Store");
             Console.WriteLine("3. Display Order History of a Store Location");
             Console.WriteLine("4. Display Order History of a Customer");
+            managerChoice = Int32.Parse(Console.ReadLine());
+            switch (managerChoice)
+            {
+                case 1:
+                    User.SearchCustomerByName(customerJSONFilePath);
+                    break;
+              
+                default:
+                    Console.WriteLine("Thank You");
+                    Console.WriteLine("Press Any Key To Continue");
+                    Console.ReadKey();
+                    break;
+            }
         }
     }
 }
