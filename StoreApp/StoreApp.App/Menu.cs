@@ -29,6 +29,10 @@ namespace StoreApp.App
             bool nextMenu = false;
             switch (cust)
             {
+                /// <summary>
+                /// Sign Up New Account
+                /// </summary>
+
                 case 1:
                     while (customerMenu)
                     {
@@ -85,6 +89,9 @@ namespace StoreApp.App
                     nextMenu = true; //resets menu true to go into next menu
                     break;
 
+                /// <summary>
+                /// Logging Int User Account
+                /// </summary>
                 case 2:
                     while (customerMenu)
                     {
@@ -97,7 +104,7 @@ namespace StoreApp.App
                             break;
 
                         }
-                        else //if the input only has numbers in it
+                        else 
                         { 
                             try
                             {
@@ -120,9 +127,7 @@ namespace StoreApp.App
                         customerMenu = false; //resets menu true to go into next menu                 
                     }
                     break;
-                case 3:
-                    
-                    break;
+               
             }
 
 
@@ -135,7 +140,6 @@ namespace StoreApp.App
                     case "1":
                         Console.WriteLine("What is your favorite store?\n1.Arlington \n5.Houston");
                         string store = Console.ReadLine();
-
                         if (getDBHandler.CheckIDParsable(Int32.Parse(store)) == false)
                         {
                             Console.WriteLine("Please Choice Either 1 or 2");
@@ -308,6 +312,10 @@ namespace StoreApp.App
             {
                 switch (manager)
                 {
+                    /// <summary>
+                    /// View Orders History of A Store 
+                    /// </summary>
+                    
                     case 1:
                         Console.WriteLine("Please Choose A Store:");
                         Console.WriteLine("1. Arlington,TX\n5. Houston,TX\n3. Exit");
@@ -333,8 +341,8 @@ namespace StoreApp.App
                                 foreach (var row in enityOrder)
                                 {
                                     Console.WriteLine("------------------------------------------------------------");
-                                    Console.WriteLine(" Order Id: {0} \nCustomer Id: {1}", row.OrderId, row.CustomerId);
-                                    Console.WriteLine(" Ariel: {0}, \nDownie: {1} \nSuavitel: {2}", row.Ariel, row.Downie, row.Suavitel);
+                                    Console.WriteLine("Order Id: {0} \nCustomer Id: {1}", row.OrderId, row.CustomerId);
+                                    Console.WriteLine("Ariel: {0}, \nDownie: {1} \nSuavitel: {2}", row.Ariel, row.Downie, row.Suavitel);
                                     Console.WriteLine();
                                 }
                                 nextMenu = false;
@@ -350,6 +358,10 @@ namespace StoreApp.App
                             }
                         }
                         break;
+
+                    /// <summary>
+                    /// Add new Items
+                    /// </summary>
 
                     case 2:
                         Console.WriteLine("Please Choose A Store:");
