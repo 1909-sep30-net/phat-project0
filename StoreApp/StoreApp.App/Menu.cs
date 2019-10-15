@@ -4,6 +4,8 @@ using StoreApp.Logic;
 using StoreApp.Library.Handlers;
 using System.Collections.Generic;
 using StoreApp.Library.Entities;
+using Serilog;
+
 namespace StoreApp.App
 {
     class Menu
@@ -68,9 +70,7 @@ namespace StoreApp.App
                             try
                             {
                                 Console.WriteLine("1.Yes 2.No");
-                                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()));
-
-
+                                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()),2);
                                 Console.WriteLine("Added New Customer Successfully! Welcome, " + newCust.firstName + " " + newCust.lastName);
                                 Inputhandler.AddNewCustomer(newCust, context);
                                 break;
@@ -98,35 +98,38 @@ namespace StoreApp.App
 
                         }
                         else //if the input only has numbers in it
-                        {
-
-
+                        { 
                             try
                             {
                                 getCustomer = getDBHandler.GetCustomerDataFromUsername(username, context);
                                 Console.WriteLine("Welcome " + getCustomer.firstName + " " + getCustomer.lastName);
-
                                 nextMenu = true;
                             }
                             catch (NullReferenceException e)
                             {
                                 Console.WriteLine("NULL Error " + username + ": " + e.Message + "\n");
+                                Log.Error("Null Value");
+                                
                             }
                             catch (Exception e)
                             {
                                 Console.WriteLine("Unknown exeption " + e);
+                                Log.Error("Unknown Error");
                             }
                         }
                         customerMenu = false; //resets menu true to go into next menu                 
                     }
+                    break;
+                case 3:
+                    
                     break;
             }
 
 
             while (nextMenu)
             {
-                Console.WriteLine("1. Place order\n2. View your order history\n3. Exit to start menu");
-                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()));
+                Console.WriteLine("1. Place order\n2. View your order history\n3. Stop");
+                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()),3);
                 switch (userInput)
                 {
                     case "1":
@@ -171,7 +174,7 @@ namespace StoreApp.App
                                         Console.WriteLine("You have an order of Ariel: {0} || Downie: {1} || Suavitel: {2}",
                                          ariel, downie, suavitel);
                                         Console.WriteLine("1.Yes 2.No");
-                                        userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()));
+                                        userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()), 2);
 
                                         if (userInput == "1")
                                         {
@@ -220,6 +223,7 @@ namespace StoreApp.App
                                                 catch (Exception e)
                                                 {
                                                     Console.WriteLine("Unable to perform the operation: \n" + e);
+                                                    Log.Error("Exception Error");
                                                 }
                                             }
 
@@ -231,12 +235,14 @@ namespace StoreApp.App
                                         else
                                         {
                                             Console.WriteLine("Invalid input, please type one of the following options.");
+                                            Log.Error("Null Value");
                                         }
 
                                     }
                                     catch (Exception e)
                                     {
-                                        Console.WriteLine(e.Message + "\nPlease enter correct numerical values for your order.");
+                                        Console.WriteLine("Please enter correct numerical values for your order.");
+                                        Log.Error("Non Numerical Error");
                                     }
 
 
@@ -271,9 +277,16 @@ namespace StoreApp.App
                             Console.WriteLine();
                         }
                         break;
-
+                    case "3":
+                        Console.Clear();
+                        Console.WriteLine("See You Later");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        //error handling
+                        Log.Error("Invalid Input");
+                        break;
                 }
-
             }
         }
 
@@ -291,136 +304,191 @@ namespace StoreApp.App
 
             bool managerMenu = true;
             bool nextMenu = false;
-            switch (manager)
+            while (managerMenu)
             {
-                case 1:
-                        Console.Clear();
+                switch (manager)
+                {
+                    case 1:
                         Console.WriteLine("Please Choose A Store:");
-                        Console.WriteLine("1. Arlington,TX\n5. Houston,TX\n3. Exit to start menu");
+                        Console.WriteLine("1. Arlington,TX\n5. Houston,TX\n3. Exit");
                         int storeId = Int32.Parse(Console.ReadLine());
-                        
-                    while (managerMenu)
-                    {
+
+                        if (storeId == 3)
+                        {
+                            Console.WriteLine("Manager's Options:");
+                            Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Switch To Customer Menu \n4. Stop");
+                            manager = Int32.Parse(Console.ReadLine());
+                        }
+
+                        nextMenu = true;
+                        while (nextMenu)
+                        {
+                            try
+                            {
+                                getStore = getDBHandler.GetStoreFromStoreId(storeId, context);
+                                Console.WriteLine("Store Address {0}, {1}, {2}, {3}", getStore.address.street, getStore.address.city, getStore.address.state, getStore.address.zip);
+                                Console.WriteLine("Ariel: {0}, Downie: {1}, Suavitel: {2}", getStore.storeInventory.items.NumberofAriel, getStore.storeInventory.items.NumberofDownie, getStore.storeInventory.items.NumberofSuavitel);
+
+                                var enityOrder = context.Orders.Where(order => order.StoreId == storeId).ToList();
+                                foreach (var row in enityOrder)
+                                {
+                                    Console.WriteLine("------------------------------------------------------------");
+                                    Console.WriteLine(" Order Id: {0} \nCustomer Id: {1}", row.OrderId, row.CustomerId);
+                                    Console.WriteLine(" Ariel: {0}, \nDownie: {1} \nSuavitel: {2}", row.Ariel, row.Downie, row.Suavitel);
+                                    Console.WriteLine();
+                                }
+                                nextMenu = false;
+                                Console.WriteLine("Manager's Options:");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Switch To Customer Menu \n4. Stop");
+                                manager = Int32.Parse(Console.ReadLine());
+
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Error finding store with input store");
+                                break;
+                            }
+                        }
+                        break;
+
+                    case 2:
+                        Console.WriteLine("Please Choose A Store:");
+                        Console.WriteLine("1. Arlington,TX\n5. Houston,TX\n3. Exit");
+                        storeId = Int32.Parse(Console.ReadLine());
+                        if (storeId == 3)
+                        {
+                            Console.WriteLine("Manager's Options:");
+                            Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Switch To Customer Menu \n4. Stop");
+                            manager = Int32.Parse(Console.ReadLine());
+                        }
+
                         try
                         {
                             getStore = getDBHandler.GetStoreFromStoreId(storeId, context);
                             Console.WriteLine("Store Address {0}, {1}, {2}, {3}", getStore.address.street, getStore.address.city, getStore.address.state, getStore.address.zip);
-                            Console.WriteLine("Ariel: {0}, Downie: {1}, Suavitel: {2}", getStore.storeInventory.items.NumberofAriel, getStore.storeInventory.items.NumberofDownie, getStore.storeInventory.items.NumberofSuavitel);
+                            Console.WriteLine("Inventory:\nAriel: {0}, Downie: {1}, Suavitel: {2}", getStore.storeInventory.items.NumberofAriel, getStore.storeInventory.items.NumberofDownie, getStore.storeInventory.items.NumberofSuavitel);
 
-                            var enityOrder = context.Orders.Where(order => order.StoreId == storeId).ToList();
-                            foreach (var row in enityOrder)
+                            bool decided = false;
+                            int ariel;
+                            int downie;
+                            int suavitel;
+
+                            while (!decided)
                             {
-                                Console.WriteLine("Order Id: {0} \nCustomer Id: {1}", row.OrderId, row.CustomerId);
-                                Console.WriteLine("Ariel: {0}, \nDownie: {1} \nSuavitel: {2}", row.Ariel, row.Downie, row.Suavitel);
-                                Console.WriteLine();
-                            }
-
-                            managerMenu = false;                           
-                            nextMenu = true;
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("Error finding store with input ID: \n");
-                        }
-                    }
-                    break;
-
-                case 2:
-                    Console.Clear();
-                    Console.WriteLine("Please Choose A Store:");
-                    Console.WriteLine("1. Arlington,TX\n5. Houston,TX\n3. Exit to start menu");
-                    storeId = Int32.Parse(Console.ReadLine());
-                    try
-                    {
-                        getStore = getDBHandler.GetStoreFromStoreId(storeId, context);
-                        Console.WriteLine("Store Address {0}, {1}, {2}, {3}", getStore.address.street, getStore.address.city, getStore.address.state, getStore.address.zip);
-                        Console.WriteLine("Inventory:\nAriel: {0}, Downie: {1}, Suavitel: {2}", getStore.storeInventory.items.NumberofAriel, getStore.storeInventory.items.NumberofDownie, getStore.storeInventory.items.NumberofSuavitel);
-
-                        bool decided = false;
-                        int ariel;
-                        int downie;
-                        int suavitel;
-
-                        while (!decided)
-                        {
-                            try
-                            {
-                                Console.WriteLine("Ariel:");
-                                string input = Console.ReadLine();
-                                ariel = Int32.Parse(input);
-                                Console.WriteLine("Downie:");
-                                input = Console.ReadLine();
-                                downie = Int32.Parse(input);
-                                Console.WriteLine("Suavitels");
-                                input = Console.ReadLine();
-                                suavitel = Int32.Parse(input);
-
-
-                                Console.WriteLine("You added number of Ariel: {0} || Downie: {1} || Suavitel: {2}",
-                                 ariel, downie, suavitel);
-                                Console.WriteLine("Ready To Add New Item? \n1.Yes 2.No");
-                                string userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()));
-
-                                if (userInput == "1")
+                                try
                                 {
-                                    decided = true;
-                                    Console.WriteLine(". . .\n");
+                                    Console.WriteLine("Ariel:");
+                                    string input = Console.ReadLine();
+                                    ariel = Int32.Parse(input);
+                                    Console.WriteLine("Downie:");
+                                    input = Console.ReadLine();
+                                    downie = Int32.Parse(input);
+                                    Console.WriteLine("Suavitels");
+                                    input = Console.ReadLine();
+                                    suavitel = Int32.Parse(input);
 
-                                    
+
+                                    Console.WriteLine("You added number of Ariel: {0} || Downie: {1} || Suavitel: {2}",
+                                     ariel, downie, suavitel);
+                                    Console.WriteLine("Ready To Add New Item? \n1.Yes 2.No");
+                                    string userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()), 2);
+
+                                    if (userInput == "1")
                                     {
-                                        order = new Logic.Order();
-                                        //uses input handler to input order into DB
-                                        var entityStore = context.Store.FirstOrDefault(i => i.StoreId == storeId);
-                                        
-                                            
+                                        decided = true;
+                                        Console.WriteLine(". . .\n");
+
+
+                                        {
+                                            order = new Logic.Order();
+                                            //uses input handler to input order into DB
+                                            var entityStore = context.Store.FirstOrDefault(i => i.StoreId == storeId);
+
+
 
                                             entityStore.Ariel += ariel;
                                             entityStore.Downie += downie;
                                             entityStore.Suavitel += suavitel;
 
-                                        
-                                        context.Store.Update(entityStore);
-                                        context.SaveChanges();
-                                        try
-                                        {
-                                            nextMenu = false;
-                                            Console.WriteLine("Added New Items Successfully!!!");
+
+                                            context.Store.Update(entityStore);
+                                            context.SaveChanges();
+                                            try
+                                            {
+                                                nextMenu = false;
+                                                Console.WriteLine("Added New Items Successfully!!!");
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                Console.WriteLine("Unable to perform the operation: \n" + e);
+                                            }
                                         }
-                                        catch (Exception e)
-                                        {
-                                            Console.WriteLine("Unable to perform the operation: \n" + e);
-                                        }
+
+                                    }
+                                    else if (userInput == "2")
+                                    {
+                                        Console.WriteLine("Please Enter The Amount of Items Again!!!");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid input, please type one of the following options.");
                                     }
 
                                 }
-                                else if (userInput == "2")
+                                catch (Exception e)
                                 {
-                                    Console.WriteLine("Please Enter The Amount of Items Again!!!");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Invalid input, please type one of the following options.");
+                                    Console.WriteLine("Error! Please Try It Again");
                                 }
 
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message + "\nPlease enter correct numerical values for your order.");
-                            }
 
+                            }
+                            nextMenu = true;
+                            break;
 
                         }
-                        nextMenu = true;
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Error finding store with input ID");
+                            break;
+                        }
+
+                       
+                    case 3:
+                        Console.Clear();
+                        //Will run code to make new customer, list of customer info, and place orders
+                        Console.WriteLine("1. Sign Up  \n2. Login \n3. Stop");
+                        string userChoice = Console.ReadLine();
+                        string customerChoice = UserChoiceHandler.UserOptionHandler(Int32.Parse(userChoice), 4);
+
+                      
+                         if (userChoice == "3")
+                        {
+                            Console.Clear();
+                            Console.WriteLine("See You Later");
+                            Environment.Exit(0);
+                        }
+                        else if (userChoice == "1" || userChoice == "2")
+                        {
+                            Menu.CustomerMenu(context, Int32.Parse(userChoice));
+                        }
+                        else //Invalid input
+                        {
+                            Console.WriteLine("Invalid input, please type one of the following options");
+                        }
+                        
+                        break;
+                    case 4:
+                        Console.WriteLine("Bye");
+                        Environment.Exit(0);
                         break;
 
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Error finding store with input ID: \n");
-                    }
-                    break;
-            }
+                    default:
+                        //error handling
+                        Log.Error("Invalid Input");
+                        break;
+                }
 
+            }
         }
     }
 }
