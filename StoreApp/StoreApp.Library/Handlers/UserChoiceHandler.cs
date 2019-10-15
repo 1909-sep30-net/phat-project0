@@ -6,7 +6,7 @@ namespace StoreApp.Library.Handlers
 {
     public class UserChoiceHandler
     {
-        public static string UserOptionHandler(int input)
+        public static string UserOptionHandler(int input, int opt)
         {
             bool flag = false;
             int userInput = input;
@@ -30,7 +30,7 @@ namespace StoreApp.Library.Handlers
                         else
                         {
 
-                            if (userInput > 2)
+                            if (userInput > opt)
                             {
                                 Console.WriteLine("Invalid input. Insert correct number from the list above\n");
                                 return null;

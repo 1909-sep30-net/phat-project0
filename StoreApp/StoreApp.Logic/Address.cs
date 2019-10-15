@@ -11,7 +11,7 @@ namespace StoreApp.Logic
 
         public bool IsAddressNotNull()
         {
-            if (street != null && city != null && state != null && zip != null)
+            if (street != null && city != null && state != null && zip != null) 
             {
                 return true;
             }

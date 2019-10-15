@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreApp.Library", "StoreAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreApp.Logic", "StoreApp.Logic\StoreApp.Logic.csproj", "{CA82707A-AB76-41A4-BECB-E6A99CE8B21B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XStoreAppTesting", "XStoreAppTesting\XStoreAppTesting.csproj", "{8A8063F3-B18D-4B91-8AEF-3A04ABF9A4C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CA82707A-AB76-41A4-BECB-E6A99CE8B21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA82707A-AB76-41A4-BECB-E6A99CE8B21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA82707A-AB76-41A4-BECB-E6A99CE8B21B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A8063F3-B18D-4B91-8AEF-3A04ABF9A4C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A8063F3-B18D-4B91-8AEF-3A04ABF9A4C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A8063F3-B18D-4B91-8AEF-3A04ABF9A4C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A8063F3-B18D-4B91-8AEF-3A04ABF9A4C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
