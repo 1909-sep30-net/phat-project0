@@ -26,7 +26,7 @@ namespace StoreApp.App
 
 
             string userInput;
-            bool customerMenu = true, flag = true;
+            bool customerMenu = true;
             bool nextMenu = false;
             switch (cust)
             {
@@ -49,7 +49,6 @@ namespace StoreApp.App
                                 /// <summary>
                                 /// Check Username To Make Sure It's not Existing
                                 /// </summary>
-
 
                                 var check = getDBHandler.GetCustomerDataFromUsername(newCust.userName,context);
                                 if(check != null)
@@ -384,7 +383,7 @@ namespace StoreApp.App
                                 }
                                 nextMenu = false;
                                 Console.WriteLine("Manager's Options:");
-                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Switch To Customer Menu \n4. Stop");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
                                 manager = Int32.Parse(Console.ReadLine());
 
                             }
@@ -407,7 +406,7 @@ namespace StoreApp.App
                         if (storeId == 3)
                         {
                             Console.WriteLine("Manager's Options:");
-                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Switch To Customer \n5.Stop");
                             manager = Int32.Parse(Console.ReadLine());
                         }
 
