@@ -22,10 +22,11 @@ namespace StoreApp.App
             Logic.Order order = new Logic.Order();
             Logic.Product items = new Logic.Product();
             List<Order> orderList = new List<Order>();
+            string username =null;
 
 
             string userInput;
-            bool customerMenu = true;
+            bool customerMenu = true, flag = true;
             bool nextMenu = false;
             switch (cust)
             {
@@ -41,8 +42,21 @@ namespace StoreApp.App
                         {
                             if (newCust.userName == null)
                             {
+                                
                                 Console.WriteLine("What is your username");
                                 newCust.userName = Console.ReadLine();
+
+                                /// <summary>
+                                /// Check Username To Make Sure It's not Existing
+                                /// </summary>
+
+
+                                var check = getDBHandler.GetCustomerDataFromUsername(newCust.userName,context);
+                                if(check != null)
+                                {
+                                    Console.WriteLine("Username Existing. Choose another one");
+                                    newCust.userName = Console.ReadLine();
+                                }
                             }
                             else if (newCust.firstName == null)
                             {
@@ -71,12 +85,19 @@ namespace StoreApp.App
                         }
                         else
                         {
+                            /// <summary>
+                            /// Insert New Account Into DB
+                            /// </summary>
+                            
                             try
                             {
                                 Console.WriteLine("1.Yes 2.No");
-                                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()),2);
+                                userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()), 2);
                                 Console.WriteLine("Added New Customer Successfully! Welcome, " + newCust.firstName + " " + newCust.lastName);
                                 Inputhandler.AddNewCustomer(newCust, context);
+                                Console.WriteLine("Your Username is " + newCust.userName);
+                                Console.WriteLine("Please Login To Continue");
+                                CustomerMenu(context, 2);
                                 break;
                             }
                             catch (Exception e)
@@ -87,6 +108,7 @@ namespace StoreApp.App
                         }
                     }
                     nextMenu = true; //resets menu true to go into next menu
+                    cust = 2;
                     break;
 
                 /// <summary>
@@ -96,7 +118,7 @@ namespace StoreApp.App
                     while (customerMenu)
                     {
                         Console.WriteLine("What is your username?");
-                        string username = Console.ReadLine();
+                         username = Console.ReadLine();
 
                         if (getDBHandler.UsernameParser(username, context) == false)
                         {
@@ -108,6 +130,9 @@ namespace StoreApp.App
                         { 
                             try
                             {
+                                /// <summary>
+                                /// Get Customer Information From Logic.Customer
+                                /// </summary>
                                 getCustomer = getDBHandler.GetCustomerDataFromUsername(username, context);
                                 Console.WriteLine("Welcome " + getCustomer.firstName + " " + getCustomer.lastName);
                                 nextMenu = true;
@@ -137,6 +162,9 @@ namespace StoreApp.App
                 userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()),3);
                 switch (userInput)
                 {
+                    /// <summary>
+                    /// Place An Order
+                    /// </summary>
                     case "1":
                         Console.WriteLine("What is your favorite store?\n1.Arlington \n5.Houston");
                         string store = Console.ReadLine();
@@ -148,7 +176,9 @@ namespace StoreApp.App
                         else //if the input only has numbers in it
                         {
                             int storeId = Int32.Parse(store);
-
+                            /// <summary>
+                            /// Display Store Information Retrieved From DB
+                            /// </summary>
                             try
                             {
                                 getStore = getDBHandler.GetStoreFromStoreId(storeId, context);
@@ -207,7 +237,9 @@ namespace StoreApp.App
                                                     order.cartItems.NumberofSuavitel = suavitel;
                                                     order.ordererAddress = getCustomer.customerAddress;
                                                     order.PlaceOrderTime();
-
+                                                    /// <summary>
+                                                    /// Update Products' Quantities
+                                                    /// </summary>
                                                     entityStore.Ariel -= ariel;
                                                     entityStore.Downie -= downie;
                                                     entityStore.Suavitel -= suavitel;
@@ -220,6 +252,9 @@ namespace StoreApp.App
                                                 context.SaveChanges();
                                                 try
                                                 {
+                                                    /// <summary>
+                                                    /// Placed Order Successfully
+                                                    /// </summary>
                                                     Inputhandler.PlaceOrder(order, context);
                                                     nextMenu = false;
                                                     Console.WriteLine("Order successfully created! Thank you for your business!\nReturning back to customer menue");
@@ -261,7 +296,9 @@ namespace StoreApp.App
                             }
                         }
                         break;
-
+                    /// <summary>
+                    /// Display Order History of The customer
+                    /// </summary>
                     case "2":
 
                         var enityOrder = context.Orders.Where(user => user.CustomerId == getCustomer.customerId).ToList();
@@ -370,7 +407,7 @@ namespace StoreApp.App
                         if (storeId == 3)
                         {
                             Console.WriteLine("Manager's Options:");
-                            Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Switch To Customer Menu \n4. Stop");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
                             manager = Int32.Parse(Console.ReadLine());
                         }
 
@@ -460,20 +497,60 @@ namespace StoreApp.App
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine("Error finding store with input ID");
+                            Console.WriteLine("Error finding store with input ID" + e.Message);
                             break;
                         }
-
-                       
+                    /// <summary>
+                    /// Search Customer By Name
+                    /// </summary>
                     case 3:
+                        Console.WriteLine("Enter First Name or Last Name To Search Information: ");
+                        string name = Console.ReadLine();
+
+                        nextMenu = true;
+                        while (nextMenu)
+                        {
+                            try
+                            {
+                                getCustomer = getDBHandler.GetCustomerDataByName(name, context);
+
+                                var entityCustomer = context.Customer.FirstOrDefault(cust => cust.LastName == name || cust.FirstName == name);
+                                if(getCustomer != null)
+                                {
+                                    Console.WriteLine("------------------------------------------------------------");
+                                    Console.WriteLine("Customer Id: {0} \nCustomer username: {1}", getCustomer.customerId, getCustomer.userName);
+                                    Console.WriteLine("Name: {0} {1}", getCustomer.firstName, getCustomer.lastName);
+                                    Console.WriteLine("Address");
+                                    Console.WriteLine("{0}, {1}, {2}, {3}", getCustomer.customerAddress.street, getCustomer.customerAddress.city, getCustomer.customerAddress.state.ToUpper(), getCustomer.customerAddress.zip);
+                                    Console.WriteLine();
+                                }
+                                if(getCustomer is null)
+                                {
+                                    Console.WriteLine("No Customer Information");
+                                }
+                                
+                                nextMenu = false;
+                                Console.WriteLine("Manager's Options:");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Switch To Customer Menu \n5.Stop");
+                                manager = Int32.Parse(Console.ReadLine());
+
+                            }
+                            catch (Exception e) 
+                            {
+                                Console.WriteLine("Error! Invalid Input. Please enter name of customer only"+ e.Message);
+                                break;
+                            }
+                            
+                        }
+                            break;
+                    case 4:
                         Console.Clear();
-                        //Will run code to make new customer, list of customer info, and place orders
+                        //Move To Customer's Menu
                         Console.WriteLine("1. Sign Up  \n2. Login \n3. Stop");
                         string userChoice = Console.ReadLine();
                         string customerChoice = UserChoiceHandler.UserOptionHandler(Int32.Parse(userChoice), 4);
 
-                      
-                         if (userChoice == "3")
+                        if (userChoice == "3")
                         {
                             Console.Clear();
                             Console.WriteLine("See You Later");
@@ -487,13 +564,11 @@ namespace StoreApp.App
                         {
                             Console.WriteLine("Invalid input, please type one of the following options");
                         }
-                        
                         break;
-                    case 4:
+                    case 5:
                         Console.WriteLine("Bye");
                         Environment.Exit(0);
                         break;
-
                     default:
                         //error handling
                         Log.Error("Invalid Input");

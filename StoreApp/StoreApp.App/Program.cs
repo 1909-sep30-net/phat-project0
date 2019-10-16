@@ -58,13 +58,22 @@ namespace StoreApp.App
                 if (userChoice == "1") //Manager
                 {
                     string managerID;
-                    Console.WriteLine("Enter Your ID: ");
+                    Console.WriteLine("Enter Your ID (Number Only): ");
                     managerID = Console.ReadLine();
-                    StoreApp.Logic.Manager getManagerInfo = getDB.GetManagerDataFromId(Int32.Parse(managerID), context);
-
-                    if (getManagerInfo == null)
+                    StoreApp.Logic.Manager getManagerInfo = new Logic.Manager();
+                    try
                     {
-                        Console.WriteLine("Invalid ID. Please Try It Again");
+                         getManagerInfo = getDB.GetManagerDataFromId(Int32.Parse(managerID), context);   
+                    }
+                    catch (FormatException e)
+                    {
+                        Console.WriteLine(e.Message + " Number ONLY");
+                        menu = false;
+                    }
+
+                    if (getManagerInfo is null)
+                    {
+                        Console.WriteLine("Invalid ID. Please Try It Again\n");
                         userChoice = "1";
                     }
 
@@ -76,26 +85,26 @@ namespace StoreApp.App
                             {
                                 Console.WriteLine("Welcome back, " + getManagerInfo.firstName + " " + getManagerInfo.lastName);
                                 Console.WriteLine("Manager's Options:");
-                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Back \n4. Stop");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
                                 int manOpt = Int32.Parse(Console.ReadLine());
-                                string managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 4);
+                                string managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 5);
                                 if (managerChoice == null)
                                 {
-                                    Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Exit to start menu \n4. Stop");
+                                    Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
                                     manOpt = Int32.Parse(Console.ReadLine());
-                                    managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 4);
+                                    managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 5);
                                 }
-                                if (manOpt == 1 || manOpt == 2)
+                                if (manOpt == 1 || manOpt == 2 || manOpt == 3)
                                 {
                                     Menu.ManagerMenu(context, manOpt);
                                 }
-                                else if (manOpt == 3)
+                                else if (manOpt == 4)
                                 {
                                     Console.WriteLine("Are you:\n1. Manager\n2. Customer");
                                     userInput = Console.ReadLine();
                                     userChoice = UserChoiceHandler.UserOptionHandler(Int32.Parse(userInput), 2);
                                 }
-                                else if (manOpt == 4)
+                                else if (manOpt == 5)
                                 {
                                     Console.Clear();
                                     Console.WriteLine("See You Later. Please Press Any Key To Stop");
@@ -106,7 +115,7 @@ namespace StoreApp.App
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine("There Is An Error. Please Try It Again"+ e.Message);
+                                Console.WriteLine("There Is An Error. Please Try It Again "+ e.Message);
                             }
                         }
                     }
