@@ -372,15 +372,18 @@ namespace StoreApp.App
                                 getStore = getDBHandler.GetStoreFromStoreId(storeId, context);
                                 Console.WriteLine("Store Address {0}, {1}, {2}, {3}", getStore.address.street, getStore.address.city, getStore.address.state, getStore.address.zip);
                                 Console.WriteLine("Ariel: {0}, Downie: {1}, Suavitel: {2}", getStore.storeInventory.items.NumberofAriel, getStore.storeInventory.items.NumberofDownie, getStore.storeInventory.items.NumberofSuavitel);
-
                                 var enityOrder = context.Orders.Where(order => order.StoreId == storeId).ToList();
                                 foreach (var row in enityOrder)
                                 {
+                                    var cust = getDBHandler.GetCustomerDataFromID(row.CustomerId,context);
+
                                     Console.WriteLine("------------------------------------------------------------");
                                     Console.WriteLine("Order Id: {0} \nCustomer Id: {1}", row.OrderId, row.CustomerId);
+                                    Console.WriteLine("Customer Name: "+ cust.firstName +" " +cust.lastName);
                                     Console.WriteLine("Ariel: {0}, \nDownie: {1} \nSuavitel: {2}", row.Ariel, row.Downie, row.Suavitel);
                                     Console.WriteLine();
                                 }
+
                                 nextMenu = false;
                                 Console.WriteLine("Manager's Options:");
                                 Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
@@ -390,6 +393,8 @@ namespace StoreApp.App
                             catch (Exception e)
                             {
                                 Console.WriteLine("Error finding store with input store");
+                                //error handling
+                                Log.Warning("Invalid Store ID");
                                 break;
                             }
                         }
@@ -469,6 +474,8 @@ namespace StoreApp.App
                                             catch (Exception e)
                                             {
                                                 Console.WriteLine("Unable to perform the operation: \n" + e);
+                                                //error handling
+                                                Log.Error("Unknown Error");
                                             }
                                         }
 
@@ -480,6 +487,8 @@ namespace StoreApp.App
                                     else
                                     {
                                         Console.WriteLine("Invalid input, please type one of the following options.");
+                                        //error handling
+                                        Log.Debug("Invalid Input");
                                     }
 
                                 }
@@ -526,6 +535,7 @@ namespace StoreApp.App
                                 if(getCustomer is null)
                                 {
                                     Console.WriteLine("No Customer Information");
+                                    
                                 }
                                 
                                 nextMenu = false;
@@ -538,6 +548,7 @@ namespace StoreApp.App
                             {
                                 Console.WriteLine("Error! Invalid Input. Please enter name of customer only"+ e.Message);
                                 break;
+
                             }
                             
                         }
@@ -562,6 +573,8 @@ namespace StoreApp.App
                         else //Invalid input
                         {
                             Console.WriteLine("Invalid input, please type one of the following options");
+                            //error handling
+                            Log.Error("Invalid Input");
                         }
                         break;
                     case 5:
