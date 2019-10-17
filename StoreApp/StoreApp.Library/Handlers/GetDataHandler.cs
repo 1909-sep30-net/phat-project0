@@ -36,16 +36,18 @@ namespace StoreApp.Library.Handlers
         }
 
  
-        public Logic.Customer CustomerData(string username, StoreAppContext context)
+        public Logic.Customer GetCustomerDataByName(string name, StoreAppContext context)
         {
-            //List All Customer Info If ManagerId is Correct
+            //List All Customer Info Their Last Name or First Name is Correct
             try
             {
                 foreach (StoreApp.Library.Entities.Customer cust in context.Customer)
                 {
-                    if (cust.Username == username)
+                    if (cust.FirstName == name || cust.LastName == name)
                     {
-                        return parser.ContextCustomerToLogicCustomer(cust);
+
+                        StoreApp.Logic.Customer matched = parser.ContextCustomerToLogicCustomer(cust);
+                        return matched;
                     }
                 }
                 return null;
@@ -57,11 +59,40 @@ namespace StoreApp.Library.Handlers
             }
         }
 
-        
-        
-        public Logic.Customer GetCustomerDataFromUsername(string username, StoreAppContext context)
+        public string GetNewCustomerUsername(StoreAppContext context)
+        {
+            string newUsername = null;
+            foreach (Entities.Customer cust in context.Customer)
+            {
+                newUsername = cust.Username;
+            }
+            return newUsername;
+        }
+
+        public Logic.Customer GetCustomerDataFromID(int customerID, StoreAppContext context)
         {
             //Some code to retrieve a list of customer data
+
+            try
+            {
+                foreach (Entities.Customer cust in context.Customer)
+                {
+                    if (cust.CustomerId == customerID)
+                    {
+                        return parser.ContextCustomerToLogicCustomer(cust);
+                    }
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Operation failed: " + e.Message);
+                return null;
+            }
+        }
+        public Logic.Customer GetCustomerDataFromUsername(string username, StoreAppContext context)
+        {
+            //return information of customer data matched with input userpane
 
             try
             {
@@ -69,7 +100,7 @@ namespace StoreApp.Library.Handlers
                 {
                     if (cust.Username == username)
                     {
-                        StoreApp.Logic.Customer matched = parser.ContextCustomerToLogicCustomer(cust);
+                        Logic.Customer matched = parser.ContextCustomerToLogicCustomer(cust);
                         return matched;
                     }
                 }

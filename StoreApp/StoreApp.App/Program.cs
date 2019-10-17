@@ -58,7 +58,7 @@ namespace StoreApp.App
                 if (userChoice == "1") //Manager
                 {
                     string managerID;
-                    Console.WriteLine("Enter Your ID (Number Only): ");
+                    Console.WriteLine("Enter Your Password (Number Only): ");
                     managerID = Console.ReadLine();
                     StoreApp.Logic.Manager getManagerInfo = new Logic.Manager();
                     try
@@ -73,7 +73,7 @@ namespace StoreApp.App
 
                     if (getManagerInfo is null)
                     {
-                        Console.WriteLine("Invalid ID. Please Try It Again\n");
+                        Console.WriteLine("Incorrect Password. Please Try It Again\n");
                         userChoice = "1";
                     }
 
@@ -85,12 +85,12 @@ namespace StoreApp.App
                             {
                                 Console.WriteLine("Welcome back, " + getManagerInfo.firstName + " " + getManagerInfo.lastName);
                                 Console.WriteLine("Manager's Options:");
-                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
+                                Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Switch To Customer Menu\n5.Stop");
                                 int manOpt = Int32.Parse(Console.ReadLine());
                                 string managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 5);
                                 if (managerChoice == null)
                                 {
-                                    Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Exit Main Menu \n5.Stop");
+                                    Console.WriteLine("1. View Order History Of A Store\n2. Add New Items To Stores\n3. Search User Information By Name \n4. Switch To Customer Menu \n5.Stop");
                                     manOpt = Int32.Parse(Console.ReadLine());
                                     managerChoice = UserChoiceHandler.UserOptionHandler(manOpt, 5);
                                 }

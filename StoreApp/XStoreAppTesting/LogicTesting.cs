@@ -18,7 +18,7 @@ namespace XStoreAppTesting
         [Theory]
         [InlineData("123 Main", "Houston", "TX", "132")]
         [InlineData("123 Main St", "Houston", "TX", "77075")]
-        [InlineData(null,"Houston","TX",null)] // Testing With Null Params
+        [InlineData("212 Second st","Houston","TX","12345")]
         public void IsAddressReturnsTrue(string street, string city, string state, string zip)
         {
             Address addr = new Address();
@@ -44,7 +44,7 @@ namespace XStoreAppTesting
         {
             Product prod = new Product();
             prod.NumberofAriel = ariel;
-;
+
             Assert.Equal( expected: prod.NumberofAriel,actual:ariel);
         }
 
@@ -55,13 +55,20 @@ namespace XStoreAppTesting
         /// </summary>
         /// <param name="username"></param>
         [Theory]
-        [InlineData("sn")]
-        [InlineData("abc")]
-        [InlineData("24")]
-        public void IsCustomerUsernameCorrect(string username)
+        [InlineData("sn","snow","john","123 Main", "Houston", "TX", "132")]
+        [InlineData("ab", "ab", "dc", "243 second", "Houston", "TX", "13234")]
+        [InlineData("ph", "phat", "nguyen", "2234 Hallow", "Houston", "TX", "73034")]
+        public void IsCustomerInfoCorrect(string username, string firstName, string lastName, string city, string state, string street, string zip)
         {
-            StoreApp.Library.Entities.Customer customer = new StoreApp.Library.Entities.Customer();
-            Assert.Equal(expected: customer.Username, actual: username);
+            Customer customer = new Customer();
+            customer.customerAddress.city = city;
+            customer.customerAddress.state = state;
+            customer.customerAddress.street = street;
+            customer.customerAddress.zip = zip;
+            customer.userName = username;
+            customer.firstName = firstName;
+            customer.lastName = lastName;
+            Assert.True(customer.IsCustomerNotNull());
         }
 
         /// <summary>

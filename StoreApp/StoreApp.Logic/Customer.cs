@@ -15,13 +15,14 @@ namespace StoreApp.Logic
 
         public bool IsCustomerNotNull()
         {
-            if (this.customerAddress.IsAddressNotNull()!= true || this.firstName == null || this.lastName == null ||this.userName == null)
+            //doesnt check for customer ID in the event that a new customer is being added
+            if (customerAddress.IsAddressNotNull() == true && this.firstName != null && this.lastName != null && this.userName != null)
             {
-                return false;
+                return true;
             }
             else
             {
-                return true;
+                return false;
             }
         }
     }

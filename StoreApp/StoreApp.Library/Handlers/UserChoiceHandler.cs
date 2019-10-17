@@ -32,7 +32,7 @@ namespace StoreApp.Library.Handlers
 
                             if (userInput > opt)
                             {
-                                Console.WriteLine("Invalid input. Insert correct number from the list above\n");
+                                Console.WriteLine("Invalid input. Insert correct number from the following list\n");
                                 return null;
                             }
                             else

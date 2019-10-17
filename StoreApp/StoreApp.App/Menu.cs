@@ -94,8 +94,7 @@ namespace StoreApp.App
                                 userInput = UserChoiceHandler.UserOptionHandler(Int32.Parse(Console.ReadLine()), 2);
                                 Console.WriteLine("Added New Customer Successfully! Welcome, " + newCust.firstName + " " + newCust.lastName);
                                 Inputhandler.AddNewCustomer(newCust, context);
-                                Console.WriteLine("Your Username is " + newCust.userName);
-                                Console.WriteLine("Please Login To Continue");
+                                Console.WriteLine("Please Login With Your Username To Continue");
                                 CustomerMenu(context, 2);
                                 break;
                             }
@@ -279,7 +278,7 @@ namespace StoreApp.App
                                     }
                                     catch (Exception e)
                                     {
-                                        Console.WriteLine("Please enter correct numerical values for your order.");
+                                        Console.WriteLine("Please Enter NUMBER ONLY.");
                                         Log.Error("Non Numerical Error");
                                     }
 
@@ -490,14 +489,11 @@ namespace StoreApp.App
                                         //error handling
                                         Log.Debug("Invalid Input");
                                     }
-
                                 }
                                 catch (Exception e)
                                 {
                                     Console.WriteLine("Error! Please Try It Again");
                                 }
-
-
                             }
                             nextMenu = true;
                             break;
